@@ -1,0 +1,24 @@
+{
+    "name": "nooku/installer",
+    "type": "composer-plugin",
+    "license": "GPLv3",
+    "description": "A Composer plugin to install Nooku Framework components.",
+    "keywords": ["nooku", "component", "installer"],
+    "homepage": "https://github.com/nooku/nooku-composer",
+    "authors": [
+        {
+            "name": "Steven Rombauts",
+            "email": "github@kotuha.be",
+            "homepage": "https://www.github.com/stevenrombauts"
+        }
+    ],
+    "autoload": {
+        "psr-0": {"Nooku\\Composer\\": "src/"}
+    },
+    "extra": {
+        "class": "Nooku\\Composer\\ComponentInstallerPlugin"
+    },
+    "require": {
+        "composer-plugin-api": "1.0.0"
+    }
+}
