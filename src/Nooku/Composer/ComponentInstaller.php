@@ -17,6 +17,22 @@ class ComponentInstaller extends LibraryInstaller
         parent::install($repo, $package);
 
         $this->io->write('    <fg=cyan>Installing</fg=cyan> into Nooku'.PHP_EOL);
+
+        $source    = $this->getInstallPath($package);
+        $extension = substr($package->getPrettyName(), strlen('nooku/'));
+
+        if (is_dir($source))
+        {
+            $target = getcwd().'/component/'.$extension.'/';
+
+            if (file_exists($target)) {
+                throw new \InvalidArgumentException('Target component already exists: '.$extension);
+            }
+
+            mkdir($target, 0777, true);
+
+            $this->_copyDirectory($source, $target);
+        }
     }
 
     /**
@@ -33,5 +49,39 @@ class ComponentInstaller extends LibraryInstaller
     public function isInstalled(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         return false;
+    }
+
+    protected function _copyDirectory($source, $target)
+    {
+        if (!is_dir($source)) {
+            throw new \InvalidArgumentException('Source directory does not exist: '.$source);
+        }
+
+        $directory = new \RecursiveDirectoryIterator($source, \FilesystemIterator::SKIP_DOTS);
+
+        $filter = new \RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) {
+            if ($current->getFilename()[0] === '.') {
+                return false;
+            }
+
+            return $current->getFilename() !== 'composer.json';
+        });
+
+        $iterator  = new \RecursiveIteratorIterator($filter, \RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($iterator as $file)
+        {
+            $path    = $file->__toString();
+            $newPath = str_replace($source, $target, $path);
+
+            var_dump($path, $newPath);
+
+            if ($file->isFile()) {
+                copy($path, $newPath);
+            }
+            else if($file->isDir()) {
+                mkdir($newPath, 0777, true);
+            }
+        }
     }
 }
