@@ -17,8 +17,6 @@ class ComponentInstaller extends LibraryInstaller
         parent::install($repo, $package);
 
         $this->io->write('    <fg=cyan>Installing</fg=cyan> into Nooku'.PHP_EOL);
-
-        
     }
 
     /**

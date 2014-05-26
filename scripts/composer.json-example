@@ -1,0 +1,11 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "file:///Users/kotuha/Sites/nooku/nooku-composer"
+        }
+    ],
+    "require": {
+        "nooku/installer": "*"
+    }
+}
