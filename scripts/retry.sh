@@ -21,6 +21,7 @@ if ! git diff-index --quiet HEAD --; then
 fi
 
 if $CHANGED ; then
+    echo "Creating temporary commit in $REPOSITORY"
 	git commit -a -m "Temporary commit"
 fi
 

@@ -5,7 +5,7 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 
-class ExtensionInstallerPlugin implements PluginInterface
+class ComponentInstallerPlugin implements PluginInterface
 {
     /**
      * Apply plugin modifications to composer
