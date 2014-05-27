@@ -40,7 +40,9 @@ fi
 git clean -x -f -d
 git reset --hard HEAD
 
-rm -rf "$NOOKU_FRAMEWORK_PATH/vendor"
+if [[ -d "$NOOKU_FRAMEWORK_PATH/vendor/nooku/" ]] ; then
+    rm -rf "$NOOKU_FRAMEWORK_PATH/vendor/nooku"
+fi
 
 # Re-install the database
 mysql -uroot -proot "$DATABASE_NAME" < "$DATABASE_NAME.sql"

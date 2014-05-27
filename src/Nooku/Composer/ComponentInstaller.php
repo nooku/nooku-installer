@@ -7,9 +7,27 @@ use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Installer\LibraryInstaller;
 
+use Nooku\Library;
+
 class ComponentInstaller extends LibraryInstaller
 {
     protected $_ignored_paths = array('composer.json', 'install.sql');
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(IOInterface $io, Composer $composer, $type = 'library', Filesystem $filesystem = null)
+    {
+        parent::__construct($io, $composer, $type, $filesystem);
+
+        // @TODO Remove this.
+        // There are two issues at the moment that require us to lower the error reporting level :
+        // Firstly, because of the legacy Joomla libraries, a lot of strict errors are being thrown, breaking execution.
+        // Secondly, because of the reliance on HttpUrl throughout the framework, this throws a lot of warnings since HttpUrl cannot deal with file:/// URLs.
+        error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE & ~E_STRICT);
+
+        $this->_bootstrap();
+    }
 
     /**
      * {@inheritDoc}
@@ -51,13 +69,70 @@ class ComponentInstaller extends LibraryInstaller
     public function isInstalled(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         $extension = substr($package->getPrettyName(), strlen('nooku/'));
-        $directory = getcwd().'/component/'.$extension.'/';
 
+        $row = Library\ObjectManager::getInstance()->getObject('com:application.database.rowset.extensions')->getExtension($extension);
+        if (!$row->isNew()) {
+            return true;
+        }
+
+        $directory = getcwd().'/component/'.$extension.'/';
         if (!file_exists($directory) || !is_dir($directory)) {
             return false;
         }
 
         return parent::isInstalled($repo, $package);
+    }
+
+    protected function _bootstrap()
+    {
+        if (defined('JPATH_ROOT')) {
+            return;
+        }
+
+        define('JPATH_ROOT'         , getcwd());
+        define('JPATH_APPLICATION'  , JPATH_ROOT.'/application/admin');
+        define('JPATH_VENDOR'       , JPATH_ROOT.'/vendor');
+        define('JPATH_SITES'        , JPATH_ROOT.'/sites');
+
+        define('JPATH_BASE'         , JPATH_APPLICATION);
+
+        define('DS', DIRECTORY_SEPARATOR);
+
+        if (!file_exists(JPATH_ROOT . '/config/config.php') || (filesize(JPATH_ROOT . '/config/config.php') < 10)) {
+            throw new \InvalidArgumentException('No configuration file found.');
+        }
+
+        require_once(JPATH_VENDOR . '/joomla/import.php');
+        jimport('joomla.environment.uri');
+        jimport('joomla.html.html');
+        jimport('joomla.html.parameter');
+        jimport('joomla.utilities.utility');
+        jimport('joomla.language.language');
+
+        require_once JPATH_ROOT.'/config/config.php';
+        $config = new \JConfig();
+
+        require_once(JPATH_ROOT.'/library/nooku.php');
+
+        \Nooku::getInstance(array(
+            'cache_prefix' => md5($config->secret) . '-cache-koowa',
+            'cache_enabled' => $config->caching
+        ));
+
+        unset($config);
+
+        Library\ClassLoader::getInstance()->getLocator('com')->registerNamespaces(
+            array(
+                '\\'              => JPATH_APPLICATION.'/component',
+                'Nooku\Component' => JPATH_ROOT.'/component'
+            )
+        );
+
+        Library\ClassLoader::getInstance()->addApplication('admin', JPATH_ROOT.'/application/admin');
+
+        Library\ObjectManager::getInstance()->getObject('lib:bootstrapper.application', array(
+            'directory' => JPATH_APPLICATION.'/component'
+        ))->bootstrap();
     }
 
     protected function _copyDirectory($source, $target)
