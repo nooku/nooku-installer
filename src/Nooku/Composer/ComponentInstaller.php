@@ -20,7 +20,7 @@ class ComponentInstaller extends LibraryInstaller
     {
         parent::__construct($io, $composer, $type, $filesystem);
 
-        // @TODO Remove this.
+        // @TODO There should not be a need to change the error reporting level.
         // There are two issues at the moment that require us to lower the error reporting level :
         // Firstly, because of the legacy Joomla libraries, a lot of strict errors are being thrown, breaking execution.
         // Secondly, because of the reliance on HttpUrl throughout the framework, this throws a lot of warnings since HttpUrl cannot deal with file:/// URLs.
