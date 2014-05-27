@@ -45,7 +45,11 @@ if [[ -d "$NOOKU_FRAMEWORK_PATH/vendor/nooku/" ]] ; then
 fi
 
 # Re-install the database
-mysql -uroot -proot "$DATABASE_NAME" < "$DATABASE_NAME.sql"
+if [[ -f "$DATABASE_NAME.sql" ]] ; then
+    mysqladmin -uroot -proot DROP "$DATABASE_NAME" --force
+    mysqladmin -uroot -proot --default-character-set=utf8 CREATE "$DATABASE_NAME"
+    mysql -uroot -proot "$DATABASE_NAME" < "$DATABASE_NAME.sql"
+fi
 
 # Show no mercy on the composer cache either
 rm -rf ~/.composer/cache/

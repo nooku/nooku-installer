@@ -43,6 +43,7 @@ class ComponentInstaller extends LibraryInstaller
 
         if (is_dir($source))
         {
+            // Copy the source files
             $target = getcwd().'/component/'.$extension.'/';
 
             if (file_exists($target)) {
@@ -52,6 +53,19 @@ class ComponentInstaller extends LibraryInstaller
             mkdir($target, 0777, true);
 
             $this->_copyDirectory($source, $target);
+
+            // Import SQL if install.sql
+            $this->_importMySQL($source.'/install.sql');
+
+            // Register the component in the `extensions` table
+            $data = array(
+                    'title'   => ucfirst($extension),
+                    'name'    => $extension,
+                    'enabled' => 1
+            );
+
+            $row = Library\ObjectManager::getInstance()->getObject('com:extensions.model.extensions')->getRow();
+            $row->setData($data)->save();
         }
     }
 
@@ -133,6 +147,38 @@ class ComponentInstaller extends LibraryInstaller
         Library\ObjectManager::getInstance()->getObject('lib:bootstrapper.application', array(
             'directory' => JPATH_APPLICATION.'/component'
         ))->bootstrap();
+    }
+
+    protected function _importMySQL($file)
+    {
+        if (!file_exists($file)) {
+            return;
+        }
+
+        if (!is_readable($file) || !is_file($file)) {
+            throw new \InvalidArgumentException('Unable to read MySQL import file: '.basename($file));
+        }
+
+        $adapter = Library\ObjectManager::getInstance()->getObject('lib:database.adapter.mysql');
+
+        $fp = fopen($file, 'r');
+
+        $query = array();
+        while (feof($fp) === false)
+        {
+            $query[] = fgets($fp);
+
+            if (preg_match('~' . preg_quote(';', '~') . '\s*$~iS', end($query)) === 1)
+            {
+                $query = trim(implode('', $query));
+
+                $adapter->execute($query);
+
+                $query = array();
+            }
+        }
+
+        fclose($fp);
     }
 
     protected function _copyDirectory($source, $target)
