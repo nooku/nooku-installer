@@ -9,6 +9,8 @@ use Composer\Installer\LibraryInstaller;
 
 class ComponentInstaller extends LibraryInstaller
 {
+    protected $_ignored_paths = array('composer.json', 'install.sql');
+
     /**
      * {@inheritDoc}
      */
@@ -48,7 +50,14 @@ class ComponentInstaller extends LibraryInstaller
      */
     public function isInstalled(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        return false;
+        $extension = substr($package->getPrettyName(), strlen('nooku/'));
+        $directory = getcwd().'/component/'.$extension.'/';
+
+        if (!file_exists($directory) || !is_dir($directory)) {
+            return false;
+        }
+
+        return parent::isInstalled($repo, $package);
     }
 
     protected function _copyDirectory($source, $target)
@@ -64,7 +73,7 @@ class ComponentInstaller extends LibraryInstaller
                 return false;
             }
 
-            return $current->getFilename() !== 'composer.json';
+            return !in_array($current->getFilename(), $this->_ignored_paths);
         });
 
         $iterator  = new \RecursiveIteratorIterator($filter, \RecursiveIteratorIterator::SELF_FIRST);
@@ -73,8 +82,6 @@ class ComponentInstaller extends LibraryInstaller
         {
             $path    = $file->__toString();
             $newPath = str_replace($source, $target, $path);
-
-            var_dump($path, $newPath);
 
             if ($file->isFile()) {
                 copy($path, $newPath);
