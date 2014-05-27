@@ -2,11 +2,16 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "file:///Users/kotuha/Sites/nooku/nooku-composer"
+            "url": "file:///path/to/nooku-composer-plugin"
+        },
+        {
+            "type": "vcs",
+            "url": "file:///path/to/nooku-test-component"
         }
     ],
     "require": {
-        "nooku/installer": "*"
+        "nooku/installer": "*",
+        "nooku/testcomponent": "*"
     },
     "minimum-stability": "dev"
 }
