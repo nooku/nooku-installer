@@ -53,10 +53,10 @@ if [[ ! -d "$NOOKU_FRAMEWORK_PATH/.git" ]] ; then
         rm  "$NOOKU_FRAMEWORK_PATH/composer.lock"
     fi
 
+    mysqldump -u"$DATABASE_USER" -p"$DATABASE_PASSWORD" "$DATABASE_NAME" > "$DATABASE_NAME.sql"
+
     git add -A
     git commit -m "Initial commit"
-
-    mysqldump -u"$DATABASE_USER" -p"$DATABASE_PASSWORD" "$DATABASE_NAME" > "$DATABASE_NAME.sql"
 fi
 
 # Clean-up the target application folder
