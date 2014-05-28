@@ -1,4 +1,12 @@
 <?php
+/**
+ * Nooku Composer plugin - https://github.com/nooku/nooku-composer
+ *
+ * @copyright	Copyright (C) 2011 - 2013 Johan Janssens and Timble CVBA. (http://www.timble.net)
+ * @license		GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+ * @link		https://github.com/nooku/nooku-composer for the canonical source repository
+ */
+
 namespace Nooku\Composer;
 
 use Composer\Composer;
@@ -9,6 +17,12 @@ use Composer\Installer\LibraryInstaller;
 
 use Nooku\Library;
 
+/**
+ * Composer installer class
+ *
+ * @author  Steven Rombauts <https://github.com/stevenrombauts>
+ * @package Nooku\Composer
+ */
 class ComponentInstaller extends LibraryInstaller
 {
     protected $_ignored_paths = array('composer.json', 'install.sql');
@@ -97,6 +111,11 @@ class ComponentInstaller extends LibraryInstaller
         return parent::isInstalled($repo, $package);
     }
 
+    /**
+     * Bootstraps the Nooku library
+     *
+     * @throws \InvalidArgumentException
+     */
     protected function _bootstrap()
     {
         if (defined('JPATH_ROOT')) {
@@ -149,6 +168,12 @@ class ComponentInstaller extends LibraryInstaller
         ))->bootstrap();
     }
 
+    /**
+     * Imports a given MySQL dump.
+     *
+     * @param $file - the MySQL dump file
+     * @throws \InvalidArgumentException
+     */
     protected function _importMySQL($file)
     {
         if (!file_exists($file)) {
@@ -181,6 +206,13 @@ class ComponentInstaller extends LibraryInstaller
         fclose($fp);
     }
 
+    /**
+     * Copy directory $source to $target
+     *
+     * @param $source
+     * @param $target
+     * @throws \InvalidArgumentException
+     */
     protected function _copyDirectory($source, $target)
     {
         if (!is_dir($source)) {
