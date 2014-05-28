@@ -1,20 +1,20 @@
 #!/bin/bash
 
-## This script will commit whatever work you got going, force the target
-## application to be reset to HEAD and will run composer install.
-## This is very crude and heavy-handed and ONLY meant for testing!
+## This script will commit whatever work you have changed to this installer,
+## and force the target application to be reset to HEAD. Then it will run composer install for debugging.
 ##
+## This is very crude and heavy-handed and ONLY meant for testing!
 ## Use the accompanied composer.json-example file in your target Nooku setup.
 
 # Configuration options:
-NOOKU_FRAMEWORK_PATH=/Users/kotuha/Sites/misc/test/nooku-temp
-DATABASE_NAME=nookucomposer
+NOOKU_FRAMEWORK_PATH=/path/to/temporary/nooku/framework/setup
+DATABASE_NAME=nookutmp
 
 # Start script:
 cd ../
 REPOSITORY=`pwd`
 
-# Commit all changes if there are any changes
+# Commit all changes if there are any
 CHANGED=false
 if ! git diff-index --quiet HEAD --; then
     CHANGED=true
@@ -36,7 +36,7 @@ if [[ ! -d "$NOOKU_FRAMEWORK_PATH/.git" ]] ; then
     mysqldump -uroot -proot "$DATABASE_NAME" > "$DATABASE_NAME.sql"
 fi
 
-# Clean-up the Nooku folder
+# Clean-up the target application folder
 git clean -x -f -d
 git reset --hard HEAD
 
