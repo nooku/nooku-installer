@@ -4,15 +4,26 @@
 ## and force the target application to be reset to HEAD. Then it will run composer install for debugging.
 ##
 ## This is very crude and heavy-handed and ONLY meant for testing!
-## Use the accompanied composer.json-example file in your target Nooku setup.
+##
+## To configure the target Nooku framework :
+## - Use the accompanied composer.json-example file in your root. (Either merge it into the existing composer.json or simply replace it). Make sure to remove composer.lock if present.
+## - Setup the correct paths in this composer.json file.
+## - If you have a repository clone, make sure to remove config/config.php from the .gitignore. (Otherwise you will lose the config.php on each "git clean" call, which will prevent the installer from working)
 
 # Configuration options:
 NOOKU_FRAMEWORK_PATH=/path/to/temporary/nooku/framework/setup
 DATABASE_NAME=nookutmp
+DATABASE_USER=root
+DATABASE_PASSWORD=root
 
 # Start script:
 cd ../
 REPOSITORY=`pwd`
+
+if [[ ! -d "$NOOKU_FRAMEWORK_PATH" ]] ; then
+    echo "$NOOKU_FRAMEWORK_PATH does not exist! Exiting."
+    exit 1
+fi
 
 # Commit all changes if there are any
 CHANGED=false
@@ -30,10 +41,22 @@ cd "$NOOKU_FRAMEWORK_PATH"
 # Initialise the nooku framework repo
 if [[ ! -d "$NOOKU_FRAMEWORK_PATH/.git" ]] ; then
     git init
+
+    if [[ -f "$NOOKU_FRAMEWORK_PATH/.gitignore" ]] ; then
+        TMP_FILE=`mktemp /tmp/config.XXXXXXXXXX`
+        sed -e "s/config\/config.php//" "$NOOKU_FRAMEWORK_PATH/.gitignore" > $TMP_FILE
+
+        mv $TMP_FILE "$NOOKU_FRAMEWORK_PATH/.gitignore"
+    fi
+
+    if [[ -f "$NOOKU_FRAMEWORK_PATH/composer.lock" ]] ; then
+        rm  "$NOOKU_FRAMEWORK_PATH/composer.lock"
+    fi
+
     git add -A
     git commit -m "Initial commit"
 
-    mysqldump -uroot -proot "$DATABASE_NAME" > "$DATABASE_NAME.sql"
+    mysqldump -u"$DATABASE_USER" -p"$DATABASE_PASSWORD" "$DATABASE_NAME" > "$DATABASE_NAME.sql"
 fi
 
 # Clean-up the target application folder
@@ -46,9 +69,9 @@ fi
 
 # Re-install the database
 if [[ -f "$DATABASE_NAME.sql" ]] ; then
-    mysqladmin -uroot -proot DROP "$DATABASE_NAME" --force
-    mysqladmin -uroot -proot --default-character-set=utf8 CREATE "$DATABASE_NAME"
-    mysql -uroot -proot "$DATABASE_NAME" < "$DATABASE_NAME.sql"
+    mysqladmin -u"$DATABASE_USER" -p"$DATABASE_PASSWORD" DROP "$DATABASE_NAME" --force
+    mysqladmin -u"$DATABASE_USER" -p"$DATABASE_PASSWORD" --default-character-set=utf8 CREATE "$DATABASE_NAME"
+    mysql -u"$DATABASE_USER" -p"$DATABASE_PASSWORD" "$DATABASE_NAME" < "$DATABASE_NAME.sql"
 fi
 
 # Show no mercy on the composer cache either

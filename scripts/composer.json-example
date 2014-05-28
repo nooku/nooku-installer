@@ -2,7 +2,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "file:///path/to/nooku-composer-plugin"
+            "url": "file:///path/to/nooku-composer"
         },
         {
             "type": "vcs",
