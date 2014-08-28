@@ -1,6 +1,6 @@
 <?php
 /**
- * Nooku Composer plugin - https://github.com/nooku/nooku-composer
+ * Nooku Installer plugin - https://github.com/nooku/nooku-composer
  *
  * @copyright	Copyright (C) 2011 - 2013 Johan Janssens and Timble CVBA. (http://www.timble.net)
  * @license		GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
@@ -14,7 +14,7 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 
 /**
- * Composer installer plugin
+ * Installer plugin
  *
  * @author  Steven Rombauts <https://github.com/stevenrombauts>
  * @package Nooku\Composer
@@ -29,7 +29,7 @@ class ComponentInstallerPlugin implements PluginInterface
      */
     public function activate(Composer $composer, IOInterface $io)
     {
-        $installer = new ComponentInstaller($io, $composer);
+        $installer = new Installer($io, $composer);
 
         $composer->getInstallationManager()->addInstaller($installer);
     }
