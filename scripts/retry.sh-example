@@ -11,7 +11,7 @@
 ## - If you have a repository clone, make sure to remove config/config.php from the .gitignore. (Otherwise you will lose the config.php on each "git clean" call, which will prevent the installer from working)
 
 # Configuration options:
-NOOKU_FRAMEWORK_PATH=/path/to/temporary/nooku/framework/setup
+TARGET_PATH=/path/to/temporary/nooku/framework/setup
 DATABASE_NAME=nookutmp
 DATABASE_USER=root
 DATABASE_PASSWORD=root
@@ -20,8 +20,8 @@ DATABASE_PASSWORD=root
 cd ../
 REPOSITORY=`pwd`
 
-if [[ ! -d "$NOOKU_FRAMEWORK_PATH" ]] ; then
-    echo "$NOOKU_FRAMEWORK_PATH does not exist! Exiting."
+if [[ ! -d "$TARGET_PATH" ]] ; then
+    echo "$TARGET_PATH does not exist! Exiting."
     exit 1
 fi
 
@@ -36,21 +36,21 @@ if $CHANGED ; then
 	git commit -a -m "Temporary commit"
 fi
 
-cd "$NOOKU_FRAMEWORK_PATH"
+cd "$TARGET_PATH"
 
 # Initialise the nooku framework repo
-if [[ ! -d "$NOOKU_FRAMEWORK_PATH/.git" ]] ; then
+if [[ ! -d "$TARGET_PATH/.git" ]] ; then
     git init
 
-    if [[ -f "$NOOKU_FRAMEWORK_PATH/.gitignore" ]] ; then
+    if [[ -f "$TARGET_PATH/.gitignore" ]] ; then
         TMP_FILE=`mktemp /tmp/config.XXXXXXXXXX`
-        sed -e "s/config\/config.php//" "$NOOKU_FRAMEWORK_PATH/.gitignore" > $TMP_FILE
+        sed -e "s/config\/config.php//" "$TARGET_PATH/.gitignore" > $TMP_FILE
 
-        mv $TMP_FILE "$NOOKU_FRAMEWORK_PATH/.gitignore"
+        mv $TMP_FILE "$TARGET_PATH/.gitignore"
     fi
 
-    if [[ -f "$NOOKU_FRAMEWORK_PATH/composer.lock" ]] ; then
-        rm  "$NOOKU_FRAMEWORK_PATH/composer.lock"
+    if [[ -f "$TARGET_PATH/composer.lock" ]] ; then
+        rm  "$TARGET_PATH/composer.lock"
     fi
 
     mysqldump -u"$DATABASE_USER" -p"$DATABASE_PASSWORD" "$DATABASE_NAME" > "$DATABASE_NAME.sql"
@@ -63,8 +63,8 @@ fi
 git clean -x -f -d
 git reset --hard HEAD
 
-if [[ -d "$NOOKU_FRAMEWORK_PATH/vendor/nooku/" ]] ; then
-    rm -rf "$NOOKU_FRAMEWORK_PATH/vendor/nooku"
+if [[ -d "$TARGET_PATH/vendor/nooku/" ]] ; then
+    rm -rf "$TARGET_PATH/vendor/nooku"
 fi
 
 # Re-install the database

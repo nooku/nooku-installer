@@ -19,7 +19,7 @@ use Composer\Plugin\PluginInterface;
  * @author  Steven Rombauts <https://github.com/stevenrombauts>
  * @package Nooku\Composer
  */
-class ComponentInstallerPlugin implements PluginInterface
+class InstallerPlugin implements PluginInterface
 {
     /**
      * Apply plugin modifications to composer

@@ -7,7 +7,7 @@
  * @link		https://github.com/nooku/nooku-composer for the canonical source repository
  */
 
-namespace Nooku\Composer;
+namespace Nooku\Composer\Joomla;
 
 use \JApplicationCli as JApplicationCli;
 use \JDispatcher as JDispatcher;
