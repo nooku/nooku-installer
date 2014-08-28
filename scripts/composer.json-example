@@ -2,16 +2,16 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "file:///path/to/nooku-composer"
+            "url": "file:///path/to/this-repository"
         },
         {
             "type": "vcs",
-            "url": "file:///path/to/nooku-test-component"
+            "url": "file:///path/to/package-you-want-to-install"
         }
     ],
     "require": {
         "nooku/installer": "*",
-        "nooku/testcomponent": "*"
+        "nooku/package-you-want-to-install": "*"
     },
     "minimum-stability": "dev"
 }

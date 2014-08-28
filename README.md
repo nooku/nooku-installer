@@ -1,29 +1,25 @@
 # Nooku Composer Installer
 
-This Composer plugin will install components into your Nooku Framework setup. 
+This Composer plugin will install Nooku Framework into your Joomla setup. 
 
 ## Usage
 
-Create a composer.json manifest in your component's root folder. Set the type to `nooku-installer` and make sure it requires the `nooku/installer` package. Example:
+Create a composer.json manifest in your Joomla installation's root folder and add the following requirement:
 
 ```json
 {
-    	"name": "nooku/my-component",
-    	"description": "My Nooku component!",
-    	"type": "nooku-installer",
     	"require": {
-        	"nooku/installer": "0.9.0"
+        	"nooku/nooku-framework": "*"
     	}
 }
 ```
-Make sure to set the correct version! For example, if you are working on Nooku Framework v0.9.0, use `nooku/installer` of the same version.
 
-Now add your `nooku/my-component` package to your [http://github.com/nooku/nooku-framework](Nooku Framework)'s composer.json file and execute `composer install`.
+Now execute `composer install` and the framework will be installed and enabled. 
 
 ## Requirements
 
 * Composer
-* Nooku Framework version 0.9.0 and up.
+* Joomla version 2.5.0 and up.
 
 ## Contributing
 
