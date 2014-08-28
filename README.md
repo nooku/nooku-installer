@@ -8,9 +8,10 @@ Create a composer.json manifest in your Joomla installation's root folder and ad
 
 ```json
 {
-    	"require": {
-        	"nooku/nooku-framework": "*"
-    	}
+    "require": {        
+        "nooku/nooku-framework": "dev-develop"
+    },
+    "minimum-stability": "dev"
 }
 ```
 
