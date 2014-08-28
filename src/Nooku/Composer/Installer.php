@@ -79,7 +79,14 @@ class Installer extends LibraryInstaller
     {
         parent::install($repo, $package);
 
-        if(!$this->_application->install($this->getInstallPath($package)))
+        $installed = $this->_application->install($this->getInstallPath($package));
+
+        if($installed)
+        {
+            $query = 'UPDATE #__extensions SET enabled = 1 WHERE  type = \'plugin\' AND element = \'koowa\' AND folder = \'system\'';
+            \JFactory::getDBO()->setQuery($query)->query();
+        }
+        else
         {
             // Get all error messages that were stored in the message queue
             $descriptions = $this->_getApplicationMessages();
