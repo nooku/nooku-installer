@@ -9,8 +9,6 @@
 
 namespace Nooku\Composer;
 
-use Nooku\Composer\Installer\Framework;
-
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
@@ -25,8 +23,11 @@ use Composer\Installer\LibraryInstaller;
  */
 class Installer extends LibraryInstaller
 {
-    protected $_delegates   = array();
     protected $_config      = null;
+    protected $_instances   = array();
+    protected $_delegates   = array(
+            'nooku-framework'   =>  'Nooku\Composer\Installer\Framework'
+    );
 
     /**
      * {@inheritDoc}
@@ -46,20 +47,19 @@ class Installer extends LibraryInstaller
      */
     public function getDelegate($packageType)
     {
-        if (!isset($this->_delegates[$packageType]))
+        if (!isset($this->_instances[$packageType]))
         {
-            switch($packageType)
+            if (isset($this->_delegates[$packageType]))
             {
-                case 'nooku-framework':
-                    $this->_delegates[$packageType] = new Framework($this->io, $this->composer, 'nooku-framework');
-                    break;
-                default:
-                    throw new \InvalidArgumentException('Unknown package type `'.$packageType.'`.');
-                    break;
+                $classname = $this->_delegates[$packageType];
+                $instance  = new $classname($this->io, $this->composer, 'nooku-framework');
+
+                $this->_instances[$packageType] = $instance;
             }
+            else throw new \InvalidArgumentException('Unknown package type `'.$packageType.'`.');
         }
 
-        return $this->_delegates[$packageType];
+        return $this->_instances[$packageType];
     }
 
     /**
@@ -91,7 +91,7 @@ class Installer extends LibraryInstaller
      */
     public function supports($packageType)
     {
-        return $packageType === 'nooku-framework';
+        return in_array($packageType, array_keys($this->_delegates));
     }
 
     /**
