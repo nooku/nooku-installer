@@ -26,7 +26,8 @@ class Installer extends LibraryInstaller
     protected $_config      = null;
     protected $_instances   = array();
     protected $_delegates   = array(
-            'nooku-framework'   =>  'Nooku\Composer\Installer\Framework'
+            'nooku-framework'   =>  'Nooku\Composer\Installer\NookuFramework',
+            'nooku-component'   =>  'Nooku\Composer\Installer\NookuComponent'
     );
 
     /**

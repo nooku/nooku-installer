@@ -21,9 +21,9 @@ use Composer\Installer\LibraryInstaller;
  * Installer class to install nooku-framework into a Joomla site.
  *
  * @author  Steven Rombauts <https://github.com/stevenrombauts>
- * @package Nooku\Composer\
+ * @package Nooku\Composer\Installer
  */
-class Framework extends LibraryInstaller
+class NookuFramework extends LibraryInstaller
 {
     protected $_application = null;
     protected $_credentials = array();
