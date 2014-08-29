@@ -9,6 +9,8 @@
 
 namespace Nooku\Composer;
 
+use Nooku\Composer\Installer\Framework;
+
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
@@ -23,9 +25,8 @@ use Composer\Installer\LibraryInstaller;
  */
 class Installer extends LibraryInstaller
 {
+    protected $_delegates   = array();
     protected $_config      = null;
-    protected $_application = null;
-    protected $_credentials = array();
 
     /**
      * {@inheritDoc}
@@ -35,33 +36,30 @@ class Installer extends LibraryInstaller
         parent::__construct($io, $composer, $type);
 
         $this->_config = $composer->getConfig();
-
-        $this->_initialize();
     }
 
     /**
-     * Initializes extension installer.
+     * Returns a specialized LibraryInstaller subclass to deal with the given package type.
      *
-     * @return void
+     * @return Composer\Installer\LibraryInstaller
+     * @throws \InvalidArgumentException
      */
-    protected function _initialize()
+    public function getDelegate($packageType)
     {
-        $config = $this->_config->get('joomla');
-
-        if(is_null($config) || !is_array($config)) {
-            $config = array();
+        if (!isset($this->_delegates[$packageType]))
+        {
+            switch($packageType)
+            {
+                case 'nooku-framework':
+                    $this->_delegates[$packageType] = new Framework($this->io, $this->composer, 'nooku-framework');
+                    break;
+                default:
+                    throw new \InvalidArgumentException('Unknown package type `'.$packageType.'`.');
+                    break;
+            }
         }
 
-        $defaults = array(
-            'name' => 'root',
-            'username'  => 'root',
-            'groups'    => array(8),
-            'email'     => 'root@localhost.home'
-        );
-
-        $this->_credentials = array_merge($defaults, $config);
-
-        $this->_bootstrap();
+        return $this->_delegates[$packageType];
     }
 
     /**
@@ -69,7 +67,7 @@ class Installer extends LibraryInstaller
      */
     public function getInstallPath(PackageInterface $package)
     {
-        return 'tmp/' . $package->getPrettyName();
+        return $this->getDelegate($package->getType())->getInstallPath($package);
     }
 
     /**
@@ -77,27 +75,7 @@ class Installer extends LibraryInstaller
      */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        parent::install($repo, $package);
-
-        $installed = $this->_application->install($this->getInstallPath($package));
-
-        if($installed)
-        {
-            $query = 'UPDATE #__extensions SET enabled = 1 WHERE  type = \'plugin\' AND element = \'koowa\' AND folder = \'system\'';
-            \JFactory::getDBO()->setQuery($query)->query();
-        }
-        else
-        {
-            // Get all error messages that were stored in the message queue
-            $descriptions = $this->_getApplicationMessages();
-
-            $error = 'Error while installing '.$package->getPrettyName();
-            if(count($descriptions)) {
-                $error .= ':'.PHP_EOL.implode(PHP_EOL, $descriptions);
-            }
-
-            throw new \RuntimeException($error);
-        }
+        $this->getDelegate($package->getType())->install($repo, $package);
     }
 
     /**
@@ -105,20 +83,7 @@ class Installer extends LibraryInstaller
      */
     public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
     {
-        parent::update($repo, $initial, $target);
-
-        if(!$this->_application->update($this->getInstallPath($target)))
-        {
-            // Get all error messages that were stored in the message queue
-            $descriptions = $this->_getApplicationMessages();
-
-            $error = 'Error while updating '.$target->getPrettyName();
-            if(count($descriptions)) {
-                $error .= ':'.PHP_EOL.implode(PHP_EOL, $descriptions);
-            }
-
-            throw new \RuntimeException($error);
-        }
+        $this->getDelegate($initial->getType())->update($repo, $initial, $target);
     }
 
     /**
@@ -134,74 +99,6 @@ class Installer extends LibraryInstaller
      */
     public function isInstalled(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        return $this->_application->hasExtension('pkg_koowa', 'package');
-    }
-
-    /**
-     * Bootstraps the Joomla application
-     *
-     * @return void
-     */
-    protected function _bootstrap()
-    {
-        if(!defined('_JEXEC'))
-        {
-            $_SERVER['HTTP_HOST']   = 'localhost';
-            $_SERVER['HTTP_USER_AGENT'] = 'Composer';
-
-            define('_JEXEC', 1);
-            define('DS', DIRECTORY_SEPARATOR);
-
-            define('JPATH_BASE', realpath('.'));
-            require_once JPATH_BASE . '/includes/defines.php';
-
-            require_once JPATH_BASE . '/includes/framework.php';
-            require_once JPATH_LIBRARIES . '/import.php';
-
-            require_once JPATH_LIBRARIES . '/cms.php';
-        }
-
-        if(!($this->_application instanceof Joomla\Application))
-        {
-            $options = array('root_user' => $this->_credentials['username']);
-
-            $this->_application = new Joomla\Application($options);
-            $this->_application->authenticate($this->_credentials);
-        }
-    }
-
-    /**
-     * Fetches the enqueued flash messages from the Joomla application object.
-     *
-     * @return array
-     */
-    protected function _getApplicationMessages()
-    {
-        $messages       = $this->_application->getMessageQueue();
-        $descriptions   = array();
-
-        foreach($messages as $message)
-        {
-            if($message['type'] == 'error') {
-                $descriptions[] = $message['message'];
-            }
-        }
-
-        return $descriptions;
-    }
-
-    public function __destruct()
-    {
-        if(!defined('_JEXEC')) {
-            return;
-        }
-
-        // Clean-up to prevent PHP calling the session object's __destruct() method;
-        // which will burp out Fatal Errors all over the place because the MySQLI connection
-        // has already closed at that point.
-        $session = \JFactory::$session;
-        if(!is_null($session) && is_a($session, 'JSession')) {
-            $session->close();
-        }
+        return $this->getDelegate($package->getType())->isInstalled($repo, $package);
     }
 }
