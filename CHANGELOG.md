@@ -6,7 +6,7 @@ To view the diff between two versions, go to https://github.com/nooku/nooku-inst
 
 ## 0.2.0 (2014-08-29)
 
- * Improved - Implement supprot for multiple installers.
+ * Improved - Implement support for multiple installers.
  * Added - Support `nooku-component` package types to install reusable Nooku Framework components.
 
 ## 0.1.0 (2014-08-28)
