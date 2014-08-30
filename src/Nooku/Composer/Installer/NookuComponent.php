@@ -18,7 +18,7 @@ use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Installer\LibraryInstaller;
 
 /**
- * Installer class to install reusable Nooku components into a Nooku Platform installation.
+ * Installer class to install reusable Nooku components into a Nooku Framework installation.
  *
  * @author  Oli Griffiths <https://github.com/oligriffiths>
  * @package Nooku\Composer\Installer
@@ -76,7 +76,7 @@ class NookuComponent extends LibraryInstaller
  * You can override this autoloader by supplying an autoload.php file in the root of the relevant component.
  **/
 
-\Nooku\Library\ObjectManager::getInstance()
+KObjectManager::getInstance()
     ->getObject('lib:object.bootstrapper')
     ->registerComponent(
         '$component',
