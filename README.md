@@ -34,6 +34,7 @@ The following settings are required to make your component installable through C
 
 * The `type` directive must be set to `nooku-component`.
 * The `name` directive must end with the `-component` suffix.
+* You must make sure to require the `nooku/installer` package so that Composer knows how to handle your package.
 * You must include the `autoload` directive. You do not, however, need to include the `autoload.php` file yourself. The plugin will autogenerate it for you if it's not found in the repository.
 
 You can now publish your component on [Packagist](http://packagist.org) or [add your own repository](https://getcomposer.org/doc/05-repositories.md#vcs) to your Joomla's composer.json file.  Your component can then be installed using the `composer install` command.
