@@ -28,8 +28,18 @@ class NookuFramework extends JoomlaExtension
 
         parent::install($repo, $package);
 
-        $query = 'UPDATE #__extensions SET enabled = 1 WHERE  type = \'plugin\' AND element = \'koowa\' AND folder = \'system\'';
-        \JFactory::getDBO()->setQuery($query)->query();
+        $path = JPATH_PLUGINS . '/system/koowa/koowa.php';
+        if (file_exists($path))
+        {
+            $query = 'UPDATE #__extensions SET enabled = 1 WHERE  type = \'plugin\' AND element = \'koowa\' AND folder = \'system\'';
+            \JFactory::getDBO()->setQuery($query)->query();
+
+            require_once $path;
+
+            $dispatcher = \JEventDispatcher::getInstance();
+            new \PlgSystemKoowa($dispatcher, array());
+        }
+        else throw new \RuntimeException('Failed to install `nooku/nooku-framework`.');
     }
 
     /**
