@@ -6,7 +6,7 @@ To view the diff between two versions, go to https://github.com/nooku/nooku-inst
 
 ## 1.0.0 (2014-09-01)
 
- * Improved - After installing `nooku-framework`, immediately bootstrap it.
+ * Improved - Always load the framework plugin if it is available when we install regular extensions.
  * Added - Support `joomla-extension` package types to install any kind of Joomla extension.
 
 ## 0.2.0 (2014-08-29)

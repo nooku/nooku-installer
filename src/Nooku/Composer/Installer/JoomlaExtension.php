@@ -61,6 +61,7 @@ class JoomlaExtension extends LibraryInstaller
         $this->_credentials = array_merge($defaults, $config);
 
         $this->_bootstrap();
+        $this->_loadKoowaPlugin();
     }
 
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
@@ -228,6 +229,27 @@ class JoomlaExtension extends LibraryInstaller
             $this->_application = new Application($options);
             $this->_application->authenticate($this->_credentials);
         }
+    }
+
+    /**
+     * Initializes the Koowa plugin
+     */
+    protected function _loadKoowaPlugin()
+    {
+        if (class_exists('Koowa')) {
+            return;
+        }
+
+        $path = JPATH_PLUGINS . '/system/koowa/koowa.php';
+
+        if (!file_exists($path)) {
+            return;
+        }
+
+        require_once $path;
+
+        $dispatcher = \JEventDispatcher::getInstance();
+        new \PlgSystemKoowa($dispatcher, array());
     }
 
     public function __destruct()
