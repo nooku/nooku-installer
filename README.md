@@ -2,10 +2,29 @@
 
 This Composer plugin will deal with Nooku related packages. The following package types are supported: 
 
+* [joomla-extension](#user-content-joomla-extension)
 * [nooku-component](#user-content-nooku-component)
 * [nooku-framework](#user-content-nooku-framework)
 
-## Usage
+### Joomla Extension
+
+If you set the type of your Composer package to `joomla-extension`, this plugin will attempt to install it into your Joomla installation as a regular extension. 
+
+To make your extension installable through Composer, add a `composer.json` file with at least the following configuration values:
+
+```json
+{
+    "name": "vendor/com_name",
+    "type": "joomla-extension",
+    "require": {
+        "nooku/nooku-framework": "dev-develop"
+    }
+}
+```
+
+Note: the `nooku/nooku-framework` framework requirement will also install this installer plugin. If you did not build your package using [Nooku Framework](http://github.com/nooku/nooku-framework), you can simply require this plugin instead: `"nooku/installer": "*"`
+
+You can now publish your component on [Packagist](http://packagist.org) or [add your own repository](https://getcomposer.org/doc/05-repositories.md#vcs) to your Joomla's composer.json file.  Your component can then be installed using the `composer install` command.
 
 ### Nooku Component
 
