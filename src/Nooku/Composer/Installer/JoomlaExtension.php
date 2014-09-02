@@ -25,6 +25,8 @@ use Composer\Installer\LibraryInstaller;
  */
 class JoomlaExtension extends LibraryInstaller
 {
+    protected $_package_prefixes = array('com', 'plg', 'mod', 'tpl', 'pkg', 'file', 'lib', 'lng');
+
     protected $_application = null;
     protected $_credentials = array();
     protected $_config      = null;
@@ -66,6 +68,10 @@ class JoomlaExtension extends LibraryInstaller
 
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        if (!$this->_isValidName($package->getPrettyName())) {
+            throw new \InvalidArgumentException('Invalid package name `'.$package->getPrettyName().'`. Name should be of the format `vendor/xyz_name`, where xyz is a valid Joomla extension type (' . implode(', ', $this->_package_prefixes) . ').');
+        }
+
         parent::install($repo, $package);
 
         if(!$this->_application->install($this->getInstallPath($package)))
@@ -87,6 +93,10 @@ class JoomlaExtension extends LibraryInstaller
      */
     public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
     {
+        if (!$this->_isValidName($target->getPrettyName())) {
+            throw new \InvalidArgumentException('Invalid package name `'.$package->getPrettyName().'`. Name should be of the format `vendor/xyz_name`, with xyz a valid Joomla extension type (' . implode(', ', $this->_package_prefixes) . ').');
+        }
+
         parent::update($repo, $initial, $target);
 
         if(!$this->_application->update($this->getInstallPath($target)))
@@ -154,7 +164,6 @@ class JoomlaExtension extends LibraryInstaller
     {
         $element    = '';
         $type       = (string) $manifest->attributes()->type;
-        $prefix     = isset($this->_prefixes[$type]) ? $this->_prefixes[$type].'_' : 'com_';
 
         switch($type)
         {
@@ -229,6 +238,19 @@ class JoomlaExtension extends LibraryInstaller
             $this->_application = new Application($options);
             $this->_application->authenticate($this->_credentials);
         }
+    }
+
+    protected function _isValidName($packageName)
+    {
+        list(, $name)   = explode('/', $packageName);
+
+        if (is_null($name) || empty($name)) {
+            return false;
+        }
+
+        list($prefix, ) = explode('_', $name, 2);
+
+        return in_array($prefix, $this->_package_prefixes);
     }
 
     /**
