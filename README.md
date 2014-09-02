@@ -22,11 +22,32 @@ To make your extension installable through Composer, add a `composer.json` file 
 }
 ```
 
-Note: the `nooku/nooku-framework` framework requirement will also install this installer plugin. If you did not build your package using [Nooku Framework](http://github.com/nooku/nooku-framework), you can simply require this plugin instead: `"nooku/installer": "*"`.
+Note: the `nooku/nooku-framework` framework requirement will also install this installer plugin. If you did not build your package on top of the [Nooku Framework](http://github.com/nooku/nooku-framework), you can simply require this plugin instead: `"nooku/installer": "*"`.
+
+#### Package name
+
+The `name` attribute of your composer.json manifest must always be in the following format: `vendor/xyz_name`, where `xyz` is any of the following:
+
+* `com` (component)
+* `plg` (plugin)
+* `mod` (module)
+* `tpl` (template)
+* `pkg` ([package](http://docs.joomla.org/Package))
+* `lib` (library)
+* `lng` (language)
+* `file` (file package)
+
+This prefix indicates the type of package your extension contains. Refer to the Joomla documentation for a list of the [the available types](http://docs.joomla.org/Manifest_files#Root_element).
+
+Any other naming format will be rejected.
+
+#### Repository layout
 
 To have Composer succesfully install your extension into Joomla, you need to make sure your repository layout resembles an installable Joomla package. This means that if you were to create an archive of your repository contents, that archive can be installed using the Joomla Extension Manager. 
 
 This means that you need to add a [valid XML manifest](http://docs.joomla.org/Manifest_files) to the root directory and make sure it points to the correct paths. For a working example, you can always refer to our [com_tada](https://github.com/nooku/nooku-com_tada/) example component!
+
+#### Publishing
 
 You can now publish your component on [Packagist](http://packagist.org) or [add your own repository](https://getcomposer.org/doc/05-repositories.md#vcs) to your Joomla's composer.json file.  Your component can then be installed using the `composer install` command.
 
