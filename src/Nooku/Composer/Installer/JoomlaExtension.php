@@ -68,8 +68,12 @@ class JoomlaExtension extends LibraryInstaller
 
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        if (!$this->_isValidName($package->getPrettyName())) {
-            throw new \InvalidArgumentException('Invalid package name `'.$package->getPrettyName().'`. Name should be of the format `vendor/xyz_name`, where xyz is a valid Joomla extension type (' . implode(', ', $this->_package_prefixes) . ').');
+        if (!$this->_isValidName($package->getPrettyName()))
+        {
+            throw new \InvalidArgumentException(
+                'Invalid package name `'.$package->getPrettyName().'`. '.
+                'Name should be of the format `vendor/xyz_name`, where xyz is a valid Joomla extension type (' . implode(', ', $this->_package_prefixes) . ').'
+            );
         }
 
         parent::install($repo, $package);
@@ -93,9 +97,12 @@ class JoomlaExtension extends LibraryInstaller
      */
     public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
     {
-        if (!$this->_isValidName($target->getPrettyName())) {
-            throw new \InvalidArgumentException('Invalid package name `'.$package->getPrettyName().'`. Name should be of the format `vendor/xyz_name`, with xyz a valid Joomla extension type (' . implode(', ', $this->_package_prefixes) . ').');
-        }
+        if (!$this->_isValidName($target->getPrettyName()))
+        {
+            throw new \InvalidArgumentException(
+                'Invalid package name `'.$target->getPrettyName().'`. '.
+                'Name should be of the format `vendor/xyz_name`, where xyz is a valid Joomla extension type (' . implode(', ', $this->_package_prefixes) . ').'
+            );        }
 
         parent::update($repo, $initial, $target);
 
