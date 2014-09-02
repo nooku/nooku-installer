@@ -1,10 +1,10 @@
 <?php
 /**
- * Nooku Installer plugin - https://github.com/nooku/nooku-composer
+ * Nooku Installer plugin - https://github.com/nooku/nooku-installer
  *
  * @copyright    Copyright (C) 2011 - 2013 Johan Janssens and Timble CVBA. (http://www.timble.net)
  * @license      GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
- * @link         https://github.com/nooku/nooku-composer for the canonical source repository
+ * @link         https://github.com/nooku/nooku-installer for the canonical source repository
  */
 
 namespace Nooku\Composer\Installer;
@@ -31,6 +31,9 @@ class JoomlaExtension extends LibraryInstaller
     protected $_credentials = array();
     protected $_config      = null;
 
+    /**
+     * {@inheritDoc}
+     */
     public function __construct(IOInterface $io, Composer $composer, $type = 'library')
     {
         parent::__construct($io, $composer, $type);
@@ -66,6 +69,9 @@ class JoomlaExtension extends LibraryInstaller
         $this->_loadKoowaPlugin();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         if (!$this->_isValidName($package->getPrettyName()))
@@ -102,7 +108,8 @@ class JoomlaExtension extends LibraryInstaller
             throw new \InvalidArgumentException(
                 'Invalid package name `'.$target->getPrettyName().'`. '.
                 'Name should be of the format `vendor/xyz_name`, where xyz is a valid Joomla extension type (' . implode(', ', $this->_package_prefixes) . ').'
-            );        }
+            );
+        }
 
         parent::update($repo, $initial, $target);
 
@@ -258,6 +265,12 @@ class JoomlaExtension extends LibraryInstaller
         }
     }
 
+    /**
+     * Checks to see if the given package name confirms to our naming convention.
+     *
+     * @param $packageName
+     * @return bool
+     */
     protected function _isValidName($packageName)
     {
         list(, $name)   = explode('/', $packageName);
