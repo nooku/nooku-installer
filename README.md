@@ -45,7 +45,7 @@ Any other naming format will be rejected.
 
 To have Composer succesfully install your extension into Joomla, you need to make sure your repository layout resembles an installable Joomla package. This means that if you were to create an archive of your repository contents, that archive can be installed using the Joomla Extension Manager. 
 
-This means that you need to add a [valid XML manifest](http://docs.joomla.org/Manifest_files) to the root directory and make sure it points to the correct paths. For a working example, you can always refer to our [com_tada](https://github.com/nooku/nooku-com_tada/) example component!
+This means that you need to add a [valid XML manifest](http://docs.joomla.org/Manifest_files) to the root directory and make sure it points to the correct paths. For a working example, you can always refer to our [tada](https://github.com/nooku/nooku-pkg_tada/) example component!
 
 #### Publishing
 
