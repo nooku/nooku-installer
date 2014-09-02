@@ -128,17 +128,20 @@ class JoomlaExtension extends LibraryInstaller
         $installer = $this->_application->getInstaller();
         $installer->setPath('source', $this->getInstallPath($package));
 
-        $manifest = $installer->getManifest();
+        $manifest     = $installer->getManifest();
+        $manifestPath = $installer->getPath('manifest');
 
-        if($manifest)
+        if(file_exists($manifestPath) && $manifest)
         {
             $type    = (string) $manifest->attributes()->type;
-            $element = $this->_getElementFromManifest($manifest);
+            $element = $this->_getElementFromManifest($manifest, $manifestPath);
 
-            return !empty($element) ? $this->_application->hasExtension($element, $type) : false;
+            if (!empty($element)) {
+                return $this->_application->hasExtension($element, $type);
+            }
         }
 
-        return false;
+        return parent::isInstalled($repo, $package);
     }
 
     /**
@@ -167,26 +170,22 @@ class JoomlaExtension extends LibraryInstaller
      * @param $manifest
      * @return mixed|string
      */
-    protected function _getElementFromManifest($manifest)
+    protected function _getElementFromManifest($manifest, $manifestPath)
     {
-        $element    = '';
-        $type       = (string) $manifest->attributes()->type;
+        $element = '';
+        $type    = (string) $manifest->attributes()->type;
 
         switch($type)
         {
-            case 'module':
-                if(count($manifest->files->children()))
-                {
-                    foreach($manifest->files->children() as $file)
-                    {
-                        if((string) $file->attributes()->module)
-                        {
-                            $element = (string) $file->attributes()->module;
-                            break;
-                        }
-                    }
+            case 'component':
+                $name    = strtolower((string) $manifest->name);
+                $element = preg_replace('/[^A-Z0-9_\.-]/i', '', $name);
+
+                if (substr($element, 0, 4) != 'com_') {
+                    $element = 'com_'.$element;
                 }
                 break;
+            case 'module':
             case 'plugin':
                 if(count($manifest->files->children()))
                 {
@@ -200,14 +199,25 @@ class JoomlaExtension extends LibraryInstaller
                     }
                 }
                 break;
-            case 'component':
-            default:
-                $element = strtolower((string) $manifest->name);
-                $element = preg_replace('/[^A-Z0-9_\.-]/i', '', $element);
+            case 'file':
+            case 'library':
+                $element = substr($manifestPath, 0, -strlen('.xml'));
+                break;
+            case 'package':
+                $element = preg_replace('/[^A-Z0-9_\.-]/i', '', $manifest->packagename);
 
-                if(substr($element, 0, 4) != 'com_') {
-                    $element = 'com_'.$element;
+                if (substr($element, 0, 4) != 'pkg_') {
+                    $element = 'pkg_'.$element;
                 }
+                break;
+            case 'language':
+                $element = $manifest->get('tag');
+                break;
+            case 'template':
+                $name    = preg_replace('/[^A-Z0-9_ \.-]/i', '', $manifest->name);
+                $element = strtolower(str_replace(' ', '_', $name));
+                break;
+            default:
                 break;
         }
 
@@ -223,8 +233,9 @@ class JoomlaExtension extends LibraryInstaller
     {
         if(!defined('_JEXEC'))
         {
-            $_SERVER['HTTP_HOST']   = 'localhost';
+            $_SERVER['HTTP_HOST']       = 'localhost';
             $_SERVER['HTTP_USER_AGENT'] = 'Composer';
+            $_SERVER['REMOTE_ADDR']     = '127.0.0.1';
 
             define('_JEXEC', 1);
             define('DS', DIRECTORY_SEPARATOR);
