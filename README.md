@@ -107,7 +107,7 @@ Now execute `composer install` to install the framework.
 
 ## Contributing
 
-Fork the project, create a feature branch, and send us a pull request.
+Fork the project, create a feature branch from the `develop` branch, and send us a pull request.
 
 ## Authors
 
