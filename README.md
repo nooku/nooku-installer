@@ -53,7 +53,7 @@ You can now publish your component on [Packagist](http://packagist.org) or [add 
 
 ### Nooku Component
 
-Use the `nooku-component` type to install your reusable Nooku components into your Joomla setup. The Composer installer will take your code and place it inside the `/libraries/vendor` directory. For Joomla versions prior to 3.4, it will install them into the `/vendor` folder. 
+Use the `nooku-component` type to install your reusable Nooku components into your Joomla setup or [Nooku Platform](http://www.nooku.org/platform) application. The Composer installer will take your code and place it inside the `/vendor` directory. For Joomla versions 3.4 and up, it will install into the `/libraries/vendor` folder. 
 
 Your package's `composer.json` file should contain at least the following directives:
 
