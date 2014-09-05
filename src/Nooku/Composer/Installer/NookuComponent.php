@@ -96,7 +96,7 @@ EOL;
      */
     protected function _removeAutoloader(PackageInterface $package)
     {
-        $path = $this->getAutoloaderPath($package);
+        $path = $this->_getAutoloaderPath($package);
 
         if(file_exists($path))
         {
