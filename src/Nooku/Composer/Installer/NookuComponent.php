@@ -131,7 +131,7 @@ EOL;
      */
     protected function _getObjectManagerClassName()
     {
-        $files    = array('./config/bootstrapper.php', './library/nooku.php', './component');
+        $files    = array('./library/nooku.php', './component');
         $platform = true;
 
         foreach ($files as $file)
