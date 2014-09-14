@@ -67,8 +67,9 @@ class NookuComponent extends LibraryInstaller
         if(!file_exists($path))
         {
             $classname                = $this->_getObjectManagerClassName();
-            $name                     = substr($package->getPrettyName(), 0, -strlen('-component'));
-            list($vendor, $component) = explode('/', $name);
+            list($vendor, $component) = explode('/', $package->getPrettyName());
+            $parts                    = explode('-',$component);
+            $component                = $parts[count($parts)-2];
 
             $contents = <<<EOL
 <?php
