@@ -77,7 +77,8 @@ Place this `composer.json` file in the root folder of your component's repositor
 The following settings are required to make your component installable through Composer:
 
 * The `type` directive must be set to `nooku-component`.
-* The `name` directive must end with the `-component` suffix.
+* The `name` directive must be named the same as the component name, and end with `-component` suffix.
+* The `name` directive may contain multiple dashes to implement namespacing to the package name.
 * You must make sure to require the `nooku/installer` package so that Composer knows how to handle your package.
 * You must include the `autoload` directive. You do not, however, need to include the `autoload.php` file yourself. The plugin will autogenerate it for you if it's not found in the repository.
 
