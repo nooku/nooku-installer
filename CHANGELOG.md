@@ -4,6 +4,10 @@ CHANGELOG
 To get the diff for a specific change, go to https://github.com/nooku/nooku-installer/commit/xxx where xxx is the change hash.
 To view the diff between two versions, go to https://github.com/nooku/nooku-installer/compare/v0.1.0...v0.1.1
 
+## 1.0.1 (2014-11-17)
+
+* Removed - Do not enforce naming conventions on Composer package names.
+
 ## 1.0.0 (2014-09-02)
 
  * Improved - Always load the framework plugin if it is available when we install regular extensions.
