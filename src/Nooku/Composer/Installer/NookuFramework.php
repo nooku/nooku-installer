@@ -37,6 +37,8 @@ class NookuFramework extends JoomlaExtension
 
         $query = 'UPDATE #__extensions SET enabled = 1 WHERE  type = \'plugin\' AND element = \'koowa\' AND folder = \'system\'';
         \JFactory::getDBO()->setQuery($query)->query();
+
+        $this->_loadKoowaPlugin();
     }
 
     /**
