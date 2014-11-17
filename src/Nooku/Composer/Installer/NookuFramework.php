@@ -25,6 +25,14 @@ class NookuFramework extends JoomlaExtension
      */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        if (!$this->_isValidName($package->getPrettyName()))
+        {
+            throw new \InvalidArgumentException(
+                'Invalid package name `'.$package->getPrettyName().'`. '.
+                'The `nooku-framework` composer type can only install the `nooku/nooku-framework` package.'
+            );
+        }
+
         parent::install($repo, $package);
 
         $query = 'UPDATE #__extensions SET enabled = 1 WHERE  type = \'plugin\' AND element = \'koowa\' AND folder = \'system\'';

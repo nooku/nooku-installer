@@ -17,29 +17,12 @@ To make your extension installable through Composer, add a `composer.json` file 
     "name": "vendor/com_name",
     "type": "joomla-extension",
     "require": {
-        "nooku/nooku-framework": "dev-develop"
+        "nooku/nooku-framework": "2.*"
     }
 }
 ```
 
-Note: the `nooku/nooku-framework` framework requirement will also install this installer plugin. If you did not build your package on top of the [Nooku Framework](http://github.com/nooku/nooku-framework), you can simply require this plugin instead: `"nooku/installer": "*"`.
-
-#### Package name
-
-The `name` attribute of your composer.json manifest must always be in the following format: `vendor/xyz_name`, where `xyz` is any of the following:
-
-* `com` (component)
-* `plg` (plugin)
-* `mod` (module)
-* `tpl` (template)
-* `pkg` ([package](http://docs.joomla.org/Package))
-* `lib` (library)
-* `lng` (language)
-* `file` (file package)
-
-This prefix indicates the type of package your extension contains. Refer to the Joomla documentation for a list of the [the available types](http://docs.joomla.org/Manifest_files#Root_element).
-
-Any other naming format will be rejected.
+Note: the `nooku/nooku-framework` framework requirement will also install this installer plugin. If you did not build your package on top of the [Nooku Framework](http://github.com/nooku/nooku-framework), you can simply require this plugin instead: `"nooku/installer": "1.*"`.
 
 #### Repository layout
 
@@ -63,7 +46,7 @@ Your package's `composer.json` file should contain at least the following direct
     "type": "nooku-component",
     "license": "GPLv3",
     "require": {
-        "nooku/installer": "*"
+        "nooku/installer": "1.*"
     },
     "autoload": {
         "files": ["autoload.php"]
@@ -77,7 +60,6 @@ Place this `composer.json` file in the root folder of your component's repositor
 The following settings are required to make your component installable through Composer:
 
 * The `type` directive must be set to `nooku-component`.
-* The `name` directive must end with the `-component` suffix.
 * You must make sure to require the `nooku/installer` package so that Composer knows how to handle your package.
 * You must include the `autoload` directive. You do not, however, need to include the `autoload.php` file yourself. The plugin will autogenerate it for you if it's not found in the repository.
 
@@ -92,7 +74,7 @@ To install the framework, create a composer.json manifest in your Joomla install
 ```json
 {
     "require": {        
-        "nooku/nooku-framework": "dev-develop"
+        "nooku/nooku-framework": "2.*"
     },
     "minimum-stability": "dev"
 }
