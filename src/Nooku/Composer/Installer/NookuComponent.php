@@ -11,8 +11,6 @@ namespace Nooku\Composer\Installer;
 
 use Nooku\Composer\Joomla\Application as Application;
 
-use Composer\Composer;
-use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Installer\LibraryInstaller;
@@ -58,12 +56,20 @@ class NookuComponent extends LibraryInstaller
      */
     protected function _installAutoloader(PackageInterface $package)
     {
-        $path = $this->_getAutoloaderPath($package);
+        $path     = $this->_getAutoloaderPath($package);
+        $manifest = $this->_getKoowaManifest($this->getInstallPath($package));
+
+        if (!($manifest instanceof \SimpleXMLElement))
+        {
+            throw new \InvalidArgumentException(
+                'Failed to load `koowa-component.xml` manifest for package `'.$package->getPrettyName().'`.'
+            );
+        }
 
         if(!file_exists($path))
         {
-            $name                     = substr($package->getPrettyName(), 0, -strlen('-component'));
-            list($vendor, $component) = explode('/', $name);
+            list($vendor, ) = explode('/', $package->getPrettyName());
+            $component      = (string) $manifest->name;
 
             $contents = <<<EOL
 <?php
@@ -102,6 +108,29 @@ EOL;
                 unlink($path);
             }
         }
+    }
+
+    /**
+     * Attempts to locate and initialize the koowa-component.xml manifest
+     *
+     * @param PackageInterface $package
+     * @return bool|\SimpleXMLElement   Instance of SimpleXMLElement or false on failure
+     */
+    protected function _getKoowaManifest($path)
+    {
+        $directory = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::KEY_AS_PATHNAME);
+        $iterator  = new \RecursiveIteratorIterator($directory);
+        $regex     = new \RegexIterator($iterator, '/koowa-component\.xml/', \RegexIterator::GET_MATCH);
+        $files     = iterator_to_array($regex);
+
+        if (empty($files)) {
+            return false;
+        }
+
+        $manifests = array_keys($files);
+        $manifest  = simplexml_load_file($manifests[0]);
+
+        return $manifest;
     }
 
     /**

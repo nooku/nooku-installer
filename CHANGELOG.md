@@ -7,6 +7,7 @@ To view the diff between two versions, go to https://github.com/nooku/nooku-inst
 ## 1.0.1 (2014-11-17)
 
 * Fixed - Make sure to bootstrap the Koowa plugin after the framework installation.
+* Fixed - Load Nooku Component name from koowa-component.xml manifest instead of parsing it out of the package name.
 * Removed - Do not enforce naming conventions on Composer package names.
 
 ## 1.0.0 (2014-09-02)
