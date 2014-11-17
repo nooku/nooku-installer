@@ -34,10 +34,6 @@ class NookuComponent extends LibraryInstaller
      */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        if (substr($package->getPrettyName(), -strlen('-component')) !== '-component') {
-            throw new \InvalidArgumentException('The name of any package typed `nooku-component` must be formatted as `vendor/name-component`. Aborting.');
-        }
-
         parent::install($repo, $package);
 
         $this->_installAutoloader($package);
