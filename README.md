@@ -109,8 +109,6 @@ See the list of [contributors](https://github.com/nooku/nooku-installer/contribu
 
 ## License
 
-## License
-
 The `nooku-installer` plugin t is free and open-source software licensed under the [GPLv3 license](gplv3-license).
 
 [gitflow-model]: http://nvie.com/posts/a-successful-git-branching-model/
