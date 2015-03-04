@@ -28,7 +28,7 @@ Note: the `nooku/nooku-framework` framework requirement will also install this i
 
 To have Composer succesfully install your extension into Joomla, you need to make sure your repository layout resembles an installable Joomla package. This means that if you were to create an archive of your repository contents, that archive can be installed using the Joomla Extension Manager. 
 
-This means that you need to add a [valid XML manifest](http://docs.joomla.org/Manifest_files) to the root directory and make sure it points to the correct paths. For a working example, you can always refer to our [tada](https://github.com/nooku/nooku-pkg_tada/) example component!
+This means that you need to add a [valid XML manifest](http://docs.joomla.org/Manifest_files) to the root directory and make sure it points to the correct paths. For a working example, you can always refer to our [todo](https://github.com/nooku/joomla-todo) example component!
 
 #### Publishing
 
@@ -36,7 +36,7 @@ You can now publish your component on [Packagist](http://packagist.org) or [add 
 
 ### Nooku Component
 
-Use the `nooku-component` type to install your reusable Nooku components into your Joomla setup. The Composer installer will take your code and place it inside the `/libraries/vendor` directory. For Joomla versions prior to 3.4, it will install them into the `/vendor` folder. 
+Use the `nooku-component` type to install your reusable Nooku components into your Joomla setup or [Nooku Platform](http://www.nooku.org/platform) application. The Composer installer will take your code and place it inside the `/vendor` directory. For Joomla versions 3.4 and up, it will install into the `/libraries/vendor` folder. 
 
 Your package's `composer.json` file should contain at least the following directives:
 
@@ -90,7 +90,18 @@ Now execute `composer install` to install the framework.
 
 ## Contributing
 
-Fork the project, create a feature branch, and send us a pull request.
+We appreciate any contribution, whether it is related to bugs, grammar, or simply a suggestion or
+improvement. We ask that any contribution follows a few simple guidelines in order to be properly received.
+
+We follow the [GitFlow][gitflow-model] branching model, from development to release. If you are not familiar with it,
+there are several guides and tutorials online to learn about it.
+
+There are a few things you must know before submitting a pull request:
+
+- All changes need to be made against the `develop` branch. However, it is very well appreciated and highly suggested to
+start a new feature branch from `develop` and make your changes in this new branch. This way we can just checkout your
+feature branch for testing before merging it into `develop`.
+- We will not consider pull requests made directly to the `master` branch.
 
 ## Authors
 
@@ -98,4 +109,7 @@ See the list of [contributors](https://github.com/nooku/nooku-installer/contribu
 
 ## License
 
-The `nooku/installer` plugin is licensed under the GPL v3 license - see the [LICENSE](https://github.com/nooku/nooku-installer/blob/master/LICENSE) file for details.
+The `nooku-installer` plugin t is free and open-source software licensed under the [GPLv3 license](gplv3-license).
+
+[gitflow-model]: http://nvie.com/posts/a-successful-git-branching-model/
+[gplv3-license]: https://github.com/nooku/nooku-framework/blob/master/LICENSE.txt
