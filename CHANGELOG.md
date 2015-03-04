@@ -4,6 +4,10 @@ CHANGELOG
 To get the diff for a specific change, go to https://github.com/nooku/nooku-installer/commit/xxx where xxx is the change hash.
 To view the diff between two versions, go to https://github.com/nooku/nooku-installer/compare/v0.1.0...v0.1.1
 
+## 1.0.3 (2015-03-04)
+
+* Fixed - Fix call to undefined function Composer\Autoload\includeFile() error in Joomla 3.4
+
 ## 1.0.2 (2014-11-17)
 
 * Fixed - Load Nooku Component name from koowa-component.xml manifest instead of parsing it out of the package name.
