@@ -51,6 +51,6 @@ class NookuFramework extends JoomlaExtension
 
     protected function _isValidName($packageName)
     {
-        return $packageName === 'nooku/nooku-framework';
+        return in_array($packageName, array('nooku/nooku-framework', 'nooku/nooku-framework-joomla'));
     }
 }
