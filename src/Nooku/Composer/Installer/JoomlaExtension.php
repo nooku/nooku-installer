@@ -64,7 +64,7 @@ class JoomlaExtension extends LibraryInstaller
         $this->_credentials = array_merge($defaults, $config);
 
         $this->_bootstrap();
-        $this->_loadKoowaPlugin();
+        $this->_loadFramework();
     }
 
     /**
@@ -248,24 +248,22 @@ class JoomlaExtension extends LibraryInstaller
     }
 
     /**
-     * Initializes the Koowa plugin
+     * Load the framework if the autoloader.php file is available
+     * and the Koowa class does not exist yet
      */
-    protected function _loadKoowaPlugin()
+    protected function _loadFramework()
     {
         if (class_exists('Koowa')) {
             return;
         }
 
-        $path = JPATH_PLUGINS . '/system/koowa/koowa.php';
+        $path = $this->vendorDir . '/nooku/nooku-framework/autoload.php';
 
         if (!file_exists($path)) {
             return;
         }
 
         require_once $path;
-
-        $dispatcher = \JEventDispatcher::getInstance();
-        new \PlgSystemKoowa($dispatcher, array());
     }
 
     public function __destruct()
