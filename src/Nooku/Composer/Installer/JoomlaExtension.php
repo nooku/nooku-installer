@@ -257,7 +257,7 @@ class JoomlaExtension extends LibraryInstaller
             return;
         }
 
-        $path = $this->vendorDir . '/nooku/nooku-framework/autoload.php';
+        $path = $this->vendorDir . '/nooku/nooku-framework-joomla/autoload.php';
 
         if (!file_exists($path)) {
             return;

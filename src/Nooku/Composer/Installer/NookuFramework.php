@@ -25,6 +25,10 @@ class NookuFramework extends JoomlaExtension
      */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        if ($package->getPrettyName() == 'nooku/nooku-framework') {
+            return;
+        }
+
         if (!$this->_isValidName($package->getPrettyName()))
         {
             throw new \InvalidArgumentException(

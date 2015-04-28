@@ -13,7 +13,6 @@ use \JApplicationCli as JApplicationCli;
 use \JDispatcher as JDispatcher;
 use \JFactory as JFactory;
 use \JInstaller as JInstaller;
-use \JPluginHelper as JPluginHelper;
 use \JSession as JSession;
 use \JRouter as JRouter;
 use \JVersion as JVersion;
