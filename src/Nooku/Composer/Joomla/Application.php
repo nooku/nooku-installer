@@ -74,6 +74,7 @@ class Application extends JApplicationCli
         jimport('joomla.utilities.arrayhelper');
 
         jimport('joomla.application.module.helper');
+        jimport('joomla.application.router');
 
         // Tell JFactory where to find the current application object
         JFactory::$application = $this;
