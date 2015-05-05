@@ -284,12 +284,15 @@ class JoomlaExtension extends LibraryInstaller
 
 /**
  * Workaround for Joomla 3.4+
- * 
+ *
  * Fix Fatal error: Call to undefined function Composer\Autoload\includeFile() in /libraries/ClassLoader.php on line 43
  */
 namespace Composer\Autoload;
 
-function includeFile($file)
+if( !function_exists('Composer\Autoload\includeFile') )
 {
-    include $file;
+    function includeFile($file)
+    {
+        include $file;
+    }
 }
