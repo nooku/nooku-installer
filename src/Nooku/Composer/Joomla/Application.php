@@ -13,7 +13,6 @@ use \JApplicationCli as JApplicationCli;
 use \JDispatcher as JDispatcher;
 use \JFactory as JFactory;
 use \JInstaller as JInstaller;
-use \JPluginHelper as JPluginHelper;
 use \JSession as JSession;
 use \JRouter as JRouter;
 use \JVersion as JVersion;
@@ -75,6 +74,7 @@ class Application extends JApplicationCli
         jimport('joomla.utilities.arrayhelper');
 
         jimport('joomla.application.module.helper');
+        jimport('joomla.application.router');
 
         // Tell JFactory where to find the current application object
         JFactory::$application = $this;
@@ -110,11 +110,8 @@ class Application extends JApplicationCli
             $user->$key = $value;
         }
 
-        // If we're on Joomla 3, explicitely push the JUser object into the session
-        // otherwise getUser() always returns a new instance of JUser.
-        if(version_compare(JVERSION, '3.0.0', '>=')) {
-            JFactory::getSession()->set('user', $user);
-        }
+        // Push the JUser object into the session otherwise getUser() always returns a new instance of JUser.
+        JFactory::getSession()->set('user', $user);
     }
 
     /**

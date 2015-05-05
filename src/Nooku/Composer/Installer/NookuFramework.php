@@ -25,6 +25,10 @@ class NookuFramework extends JoomlaExtension
      */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        if ($package->getPrettyName() == 'nooku/nooku-framework') {
+            return;
+        }
+
         if (!$this->_isValidName($package->getPrettyName()))
         {
             throw new \InvalidArgumentException(
@@ -38,7 +42,7 @@ class NookuFramework extends JoomlaExtension
         $query = 'UPDATE #__extensions SET enabled = 1 WHERE  type = \'plugin\' AND element = \'koowa\' AND folder = \'system\'';
         \JFactory::getDBO()->setQuery($query)->query();
 
-        $this->_loadKoowaPlugin();
+        $this->_loadFramework();
     }
 
     /**
