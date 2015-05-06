@@ -35,6 +35,7 @@ class NookuComponent extends LibraryInstaller
         parent::install($repo, $package);
 
         $this->_installAutoloader($package);
+        $this->_copyAssets($package);
     }
 
     /**
@@ -47,8 +48,8 @@ class NookuComponent extends LibraryInstaller
         parent::update($repo, $initial, $target);
 
         $this->_installAutoloader($target);
+        $this->_copyAssets($target);
     }
-
     /**
      * Installs the default autoloader if no autoloader is supplied.
      *
@@ -171,5 +172,92 @@ EOL;
         }
 
         return $platform ? 'Nooku\Library\ObjectManager' : 'KObjectManager';
+    }
+
+    /**
+     * Copy assets into the media folder if the installation is running in a Joomla context
+     *
+     * @param PackageInterface $package
+     */
+    protected function _copyAssets(PackageInterface $package)
+    {
+        $path       = rtrim($this->getInstallPath($package), '/');
+        $asset_path = $path.'/resources/assets';
+        $vendor_dir = dirname(dirname($path));
+
+        // Check for libraries/joomla. vendor directory sits in libraries/ folder in Joomla 3.4+
+        $is_joomla = is_dir(dirname($vendor_dir).'/joomla') || is_dir(dirname($vendor_dir).'/libraries/joomla');
+
+        if ($is_joomla && is_dir($asset_path))
+        {
+            $manifest    = $this->_getKoowaManifest($path);
+
+            if (!($manifest instanceof \SimpleXMLElement))
+            {
+                throw new \InvalidArgumentException(
+                    'Failed to load `koowa-component.xml` manifest for package `'.$package->getPrettyName().'`.'
+                );
+            }
+
+            $root        = is_dir(dirname($vendor_dir).'/joomla') ? dirname(dirname($vendor_dir)) : dirname($vendor_dir);
+            $destination = $root.'/media/koowa/com_'.$manifest->name;
+
+            $this->_copyDirectory($asset_path, $destination);
+        }
+    }
+
+    /**
+     * Copy source folder into target. Clears the target folder first.
+     *
+     * @param $source
+     * @param $target
+     * @return bool
+     */
+    protected function _copyDirectory($source, $target)
+    {
+        $result = false;
+
+        if (!is_dir($target)) {
+            $result = mkdir($target, 0755, true);
+        }
+        else
+        {
+            // Clear directory
+            $iter = new \RecursiveDirectoryIterator($target);
+            foreach (new \RecursiveIteratorIterator($iter, \RecursiveIteratorIterator::CHILD_FIRST) as $f)
+            {
+                if ($f->isDir())
+                {
+                    if (!in_array($f->getFilename(), array('.', '..'))) {
+                        rmdir($f->getPathname());
+                    }
+                } else {
+                    unlink($f->getPathname());
+                }
+            }
+        }
+
+        if (is_dir($target))
+        {
+            $result = true; // needed for empty directories
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source), \RecursiveIteratorIterator::SELF_FIRST);
+            foreach ($iterator as $f)
+            {
+                if ($f->isDir()) {
+                    $path = $target.'/'.$iterator->getSubPathName();
+                    if (!is_dir($path)) {
+                        $result = mkdir($path);
+                    }
+                } else {
+                    $result = copy($f, $target.'/'.$iterator->getSubPathName());
+                }
+
+                if ($result === false) {
+                    break;
+                }
+            }
+        }
+
+        return $result;
     }
 }
