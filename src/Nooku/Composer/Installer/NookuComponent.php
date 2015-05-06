@@ -58,14 +58,7 @@ class NookuComponent extends LibraryInstaller
     protected function _installAutoloader(PackageInterface $package)
     {
         $path     = $this->_getAutoloaderPath($package);
-        $manifest = $this->_getKoowaManifest($this->getInstallPath($package));
-
-        if (!($manifest instanceof \SimpleXMLElement))
-        {
-            throw new \InvalidArgumentException(
-                'Failed to load `koowa-component.xml` manifest for package `'.$package->getPrettyName().'`.'
-            );
-        }
+        $manifest = $this->_getKoowaManifest($package);
 
         if(!file_exists($path))
         {
@@ -119,9 +112,11 @@ EOL;
      *
      * @param PackageInterface $package
      * @return bool|\SimpleXMLElement   Instance of SimpleXMLElement or false on failure
+     * @throws `InvalidArgumentException` on failure to load the XML manifest
      */
-    protected function _getKoowaManifest($path)
+    protected function _getKoowaManifest(PackageInterface $package)
     {
+        $path      = $this->getInstallPath($package);
         $directory = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::KEY_AS_PATHNAME);
         $iterator  = new \RecursiveIteratorIterator($directory);
         $regex     = new \RegexIterator($iterator, '/koowa-component\.xml/', \RegexIterator::GET_MATCH);
@@ -133,6 +128,13 @@ EOL;
 
         $manifests = array_keys($files);
         $manifest  = simplexml_load_file($manifests[0]);
+
+        if (!($manifest instanceof \SimpleXMLElement))
+        {
+            throw new \InvalidArgumentException(
+                'Failed to load `koowa-component.xml` manifest for package `'.$package->getPrettyName().'`.'
+            );
+        }
 
         return $manifest;
     }
@@ -190,14 +192,7 @@ EOL;
 
         if ($is_joomla && is_dir($asset_path))
         {
-            $manifest    = $this->_getKoowaManifest($path);
-
-            if (!($manifest instanceof \SimpleXMLElement))
-            {
-                throw new \InvalidArgumentException(
-                    'Failed to load `koowa-component.xml` manifest for package `'.$package->getPrettyName().'`.'
-                );
-            }
+            $manifest    = $this->_getKoowaManifest($package);
 
             $root        = is_dir(dirname($vendor_dir).'/joomla') ? dirname(dirname($vendor_dir)) : dirname($vendor_dir);
             $destination = $root.'/media/koowa/com_'.$manifest->name;
