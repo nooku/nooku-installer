@@ -79,11 +79,13 @@ class NookuComponent extends LibraryInstaller
  * You can override this autoloader by supplying an autoload.php file in the root of the relevant component.
  **/
 
+KoowaAutoloader::bootstrap();
+
 $classname::getInstance()
     ->getObject('lib:object.bootstrapper')
     ->registerComponent(
         '$component',
-        dirname(__FILE__),
+        __DIR__,
         '$vendor'
     );
 EOL;
