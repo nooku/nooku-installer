@@ -4,6 +4,15 @@ CHANGELOG
 To get the diff for a specific change, go to https://github.com/nooku/nooku-installer/commit/xxx where xxx is the change hash.
 To view the diff between two versions, go to https://github.com/nooku/nooku-installer/compare/v0.1.0...v0.1.1
 
+## 2.0.0 (2015-05-11)
+
+* Added - Support for Nooku Framework Joomla repository
+* Added - Support for moving Nooku component assets
+
+## 1.0.5 (2015-05-04)
+
+* Fixed - PHP Fatal error: Cannot redeclare Composer\Autoload\includeFile() 
+
 ## 1.0.4 (2015-04-21)
 
 * Added - Support for `nooku-framework-joomla` package
