@@ -188,7 +188,7 @@ EOL;
         $vendor_dir = dirname(dirname($path));
 
         // Check for libraries/joomla. vendor directory sits in libraries/ folder in Joomla 3.4+
-        $is_joomla = is_dir(dirname($vendor_dir).'/joomla') || is_dir(dirname($vendor_dir).'/libraries/joomla');
+        $is_joomla = is_dir(dirname($vendor_dir).'/joomla') || is_dir(dirname($vendor_dir).'/libraries/joomla');
 
         if ($is_joomla && is_dir($asset_path))
         {
