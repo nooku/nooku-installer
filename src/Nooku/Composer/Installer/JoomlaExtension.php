@@ -241,6 +241,11 @@ class JoomlaExtension extends LibraryInstaller
             define('DS', DIRECTORY_SEPARATOR);
 
             define('JPATH_BASE', realpath('.'));
+
+            if (!file_exists(JPATH_BASE . '/includes/defines.php')) {
+                throw new \RuntimeException('Could not find Joomla files. Make sure to run `composer install` from inside the root folder of your Joomla installation!');
+            }
+
             require_once JPATH_BASE . '/includes/defines.php';
 
             require_once JPATH_BASE . '/includes/framework.php';
