@@ -17,6 +17,8 @@ use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Installer\LibraryInstaller;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * Installer class to install regular extensions into a Joomla site.
  *
@@ -28,6 +30,7 @@ class JoomlaExtension extends LibraryInstaller
     protected $_application = null;
     protected $_credentials = array();
     protected $_config      = null;
+    protected $_verbosity   = OutputInterface::VERBOSITY_NORMAL;
 
     /**
      * {@inheritDoc}
@@ -37,6 +40,14 @@ class JoomlaExtension extends LibraryInstaller
         parent::__construct($io, $composer, $type);
 
         $this->_config = $composer->getConfig();
+
+        if ($io->isDebug()) {
+            $this->_verbosity = OutputInterface::VERBOSITY_DEBUG;
+        } elseif ($io->isVeryVerbose()) {
+            $this->_verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE;
+        } elseif ($io->isVerbose()) {
+            $this->_verbosity = OutputInterface::VERBOSITY_VERBOSE;
+        }
 
         $this->_initialize();
     }
@@ -245,7 +256,10 @@ class JoomlaExtension extends LibraryInstaller
 
         if(!($this->_application instanceof Application))
         {
-            $options = array('root_user' => $this->_credentials['username']);
+            $options = array(
+                'root_user' => $this->_credentials['username'],
+                'loglevel'  => $this->_verbosity
+            );
 
             $this->_application = new Application($options);
             $this->_application->authenticate($this->_credentials);
