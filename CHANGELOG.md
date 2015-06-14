@@ -9,7 +9,7 @@ To view the diff between two versions, go to https://github.com/nooku/nooku-inst
 
 * 1.0.6 (2015-06-11)
  * Fixed: Restrict console-plugin-api version to ^1.0 (see [this issue](https://github.com/composer/composer/issues/4085))
- 
+
 * 2.0.1 (2015-05-19)
  * Improved - Throw RuntimeException with clear message when running install from outside Joomla directory.
  * Added - Enable Joomla logger based on Composer's verbosity flag.
@@ -19,7 +19,7 @@ To view the diff between two versions, go to https://github.com/nooku/nooku-inst
  * Added - Support for moving Nooku component assets
 
 * 1.0.5 (2015-05-04)
- * Fixed - PHP Fatal error: Cannot redeclare Composer\Autoload\includeFile() 
+ * Fixed - PHP Fatal error: Cannot redeclare Composer\Autoload\includeFile()
 
 * 1.0.4 (2015-04-21)
  * Added - Support for `nooku-framework-joomla` package
