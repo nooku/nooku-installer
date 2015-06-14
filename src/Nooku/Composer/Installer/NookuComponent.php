@@ -62,7 +62,10 @@ class NookuComponent extends LibraryInstaller
 
         if(!file_exists($path))
         {
-            $classname      = $this->_getObjectManagerClassName();
+            $platform       = $this->_isPlatform();
+            $classname      = $platform ? 'Nooku\Library\ObjectManager' : 'KObjectManager';
+            $bootstrap      = $platform ? '' : 'KoowaAutoloader::bootstrap();';
+
             list($vendor, ) = explode('/', $package->getPrettyName());
             $component      = (string) $manifest->name;
 
@@ -73,7 +76,7 @@ class NookuComponent extends LibraryInstaller
  * You can override this autoloader by supplying an autoload.php file in the root of the relevant component.
  **/
 
-KoowaAutoloader::bootstrap();
+$bootstrap
 
 $classname::getInstance()
     ->getObject('lib:object.bootstrapper')
@@ -153,27 +156,24 @@ EOL;
     }
 
     /**
-     * Determine the correct object manager class name to be used in the
-     * autoloader. When installing into Nooku Platform, use Nooku\Library\ObjectManager,
-     * otherwise assume we are installing alongside Framework and use KObjectManager.
+     * Determine the environment we are working in: either Nooku Platform
+     * or Nooku Framework. We need this to determine the correct
+     * object manager class name to be used in the autoloader and other things.
      *
      * @return string
      */
-    protected function _getObjectManagerClassName()
+    protected function _isPlatform()
     {
         $files    = array('./library/nooku.php', './component');
-        $platform = true;
 
         foreach ($files as $file)
         {
-            if (!file_exists($file))
-            {
-                $platform = false;
-                break;
+            if (!file_exists($file)) {
+                return false;
             }
         }
 
-        return $platform ? 'Nooku\Library\ObjectManager' : 'KObjectManager';
+        return true;
     }
 
     /**
